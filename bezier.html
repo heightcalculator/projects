@@ -2,631 +2,257 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Bezier functions</title>
-    <script type="text/javascript">
-        function H(m, r) {
-            const T = N();
-            return H = function (L, g) {
-                L = L - 0x169;
-                let d = T[L];
-                return d;
-            }<html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Bessier functions</title>
     <script type="text/javascript">
-        (() => { "use strict"; var t = { 396: (t, i, e) => { Object.defineProperty(i, "__esModule", { value: !0 }), i.BezierAnim = void 0; const n = e(667), s = e(519); i.BezierAnim = class { constructor(t) { this.inMotion = !1, this.inManualMode = !1, this.motionPath = [], this.renderIntermediate = !0, this.time = 0, this.timeBind = () => { }, this.canvas = t, this.ctx = t.getContext("2d"), this.draggable = new n.Draggable(t), this.draggable.drawBg = this.drawBg.bind(this), this.draggable.draw() } drawBg() { this.ctx.fillStyle = "#1e1e1e", this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height), this.inMotion || this.inManualMode || (this.motionPath = this.getBezierPath(), this.drawAtTime(100, this.renderIntermediate)) } getBezierPath() { const t = this.draggable.points, i = []; if (t.length <= 1) return i; for (let e = 0; e <= 100; e += 1) { const n = (0, s.bezier)(t, e), o = n[n.length - 1][0]; i.push(o) } return i } drawMotionPath(t = 100) { if (this.motionPath.length <= 1) return; this.ctx.beginPath(), this.ctx.moveTo(this.motionPath[0][0], this.motionPath[0][1]); const i = Math.min(this.motionPath.length, t); for (let t = 1; t < i; t++) { const [i, e] = this.motionPath[t]; this.ctx.lineTo(i, e) } this.ctx.strokeStyle = "red", this.ctx.lineWidth = 2, this.ctx.stroke(), this.ctx.lineWidth = 1 } drawAtTime(t, i = !0) { if (!(this.motionPath.length <= 1)) { if (i) { const i = (0, s.bezier)(this.draggable.points, t); for (let t = 0; t < i.length - 1; t++) { const e = i[t]; this.ctx.beginPath(), this.ctx.moveTo(e[0][0], e[0][1]); for (let t = 1; t < e.length; t++) { const [i, n] = e[t]; this.ctx.lineTo(i, n) } this.ctx.strokeStyle = "blue", this.ctx.stroke() } } this.drawMotionPath(t) } } motionTick() { this.inMotion && (this.time += 1, this.time > 100 && (this.time = 0), this.draggable.draw(), this.drawAtTime(this.time, this.renderIntermediate), this.timeBind(this.time), setTimeout((() => requestAnimationFrame(this.motionTick.bind(this))), 30)) } bindAnimationUpdate(t) { this.timeBind = t } startMotionHandler() { this.inMotion || this.draggable.points.length <= 1 || (this.inMotion = !0, this.time = 0, this.draggable.disable(), this.motionTick(), this.canvas.addEventListener("mousedown", this.stopMotionHandler.bind(this))) } stopMotionHandler() { this.inMotion && (this.inMotion = !1, this.draggable.enable(), this.time = 0, this.timeBind(0), this.canvas.removeEventListener("mousedown", this.stopMotionHandler.bind(this))) } overrideTimeHandler(t) { this.inMotion && this.stopMotionHandler(), this.inManualMode = !0, this.time = t, this.draggable.draw(), this.drawAtTime(this.time, this.renderIntermediate), this.inManualMode = !1 } addPointHandler() { this.inMotion && this.stopMotionHandler(), this.draggable.addPoint(250, 250), this.draggable.draw() } removePointHandler() { this.inMotion && this.stopMotionHandler(), this.draggable.removePoint(), this.draggable.draw() } showIntermediateHandler() { this.renderIntermediate = !0, this.draggable.draw() } hideIntermediateHandler() { this.renderIntermediate = !1, this.draggable.draw() } resetHandler() { this.inMotion = !1, this.inManualMode = !1, this.time = 0, this.timeBind(0), this.draggable.removeAllPoints(), this.draggable.draw(), this.draggable.enable() } setDemoPoints() { this.draggable.addPoint(100, 100), this.draggable.addPoint(400, 100), this.draggable.addPoint(100, 400), this.draggable.addPoint(400, 400), this.draggable.draw() } } }, 667: (t, i) => { Object.defineProperty(i, "__esModule", { value: !0 }), i.Draggable = void 0, i.Draggable = class { constructor(t) { this.dragPoints = [], this.nextPointId = 0, this.pickup = !1, this.pickupPoint = null, this.mouseDownHandler = t => { const i = t.offsetX, e = t.offsetY, n = this.dragPoints.filter((t => { const n = t.x - i, s = t.y - e, o = t.size + 5; return n * n + s * s <= o * o })); if (0 === n.length) return; const s = n.reduce(((t, i) => t.priority > i.priority ? t : i)); s && (this.pickupPoint = s, this.pickup = !0) }, this.mouseUpHandler = t => { this.pickup = !1, this.pickupPoint = null }, this.mouseMoveHandler = t => { if (this.pickup) { const i = t.offsetX, e = t.offsetY; this.pickupPoint.x = i, this.pickupPoint.y = e, this.draw() } }, this.canvas = t, this.ctx = t.getContext("2d"), this.attachListeners() } drawBg() { } attachListeners() { this.canvas.addEventListener("mousedown", this.mouseDownHandler), this.canvas.addEventListener("mouseup", this.mouseUpHandler), this.canvas.addEventListener("mousemove", this.mouseMoveHandler) } removeListeners() { this.canvas.removeEventListener("mousedown", this.mouseDownHandler), this.canvas.removeEventListener("mouseup", this.mouseUpHandler), this.canvas.removeEventListener("mousemove", this.mouseMoveHandler) } drawPoint(t) { this.ctx.beginPath(), this.ctx.arc(t.x, t.y, t.size, 0, 2 * Math.PI), this.ctx.fillStyle = t.color, this.ctx.fill(), this.ctx.closePath(), this.ctx.fillStyle = "white", this.ctx.fillText(t.label, t.x + 5, t.y - t.size - 5) } draw() { this.drawBg(), this.dragPoints.forEach((t => this.drawPoint(t))) } set drawCallback(t) { this.drawBg = t } enable() { this.attachListeners() } disable() { this.removeListeners() } addPoint(t, i, e = 7, n = "", s = "white") { const o = this.nextPointId++; "" === n && (n = o.toString()), this.dragPoints.push({ x: t, y: i, size: e, label: n, color: s, priority: o, isDragging: !1 }) } removePoint() { this.dragPoints.pop() } removeAllPoints() { this.dragPoints = [], this.nextPointId = 0 } get points() { return this.dragPoints.map((t => [t.x, t.y])) } } }, 519: (t, i) => { Object.defineProperty(i, "__esModule", { value: !0 }), i.bezier = void 0, i.bezier = function (t, i) { if (i < 0 || i > 100) throw new Error("t must be in [0,100]"); i /= 100; const e = [t]; for (let n = 0; n < t.length - 1; n++) { const t = e[n]; if (1 === t.length) break; const s = []; for (let e = 0; e < t.length - 1; e++) { const [n, o] = t[e], [a, r] = t[e + 1], h = n + (a - n) * i, d = o + (r - o) * i; s.push([h, d]) } e.push(s) } return e } } }, i = {}; function e(n) { var s = i[n]; if (void 0 !== s) return s.exports; var o = i[n] = { exports: {} }; return t[n](o, o.exports, e), o.exports } (() => { const t = e(396); var i; i = () => { const i = document.getElementById("canvas"); i.width = 500, i.height = 500; const e = new t.BezierAnim(i), n = [["add-point-btn", "click", e.addPointHandler], ["remove-point-btn", "click", e.removePointHandler], ["start-btn", "click", e.startMotionHandler], ["stop-btn", "click", e.stopMotionHandler], ["reset-btn", "click", e.resetHandler]]; for (const [t, i, s] of n) document.getElementById(t).addEventListener(i, s.bind(e)); const s = document.getElementById("time-control"); s.addEventListener("input", (() => { e.overrideTimeHandler(parseInt(s.value)) })), e.bindAnimationUpdate((t => { s.value = t.toString() })); const o = document.getElementById("show-inter"); o.addEventListener("change", (() => { o.checked ? e.showIntermediateHandler() : e.hideIntermediateHandler() })), e.setDemoPoints() }, "loading" !== document.readyState ? i() : document.addEventListener("DOMContentLoaded", i) })() })();
-    </script>
-    <style>
-        body {
-            background-color: #1e1e1e;
-        }
-
-        #centering-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
-
-        p {
-            font-family: "K2D", sans-serif;
-            font-weight: 500;
-            font-style: normal;
-            color: #d9dcd6;
-        }
-
-        #canvas {
-            width: 500px;
-            height: 500px;
-            border: 1px solid #d9dcd6;
-            background-color: #1e1e1e;
-            display: inline-block;
-        }
-
-        #control-box {
-            width: 500px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
-        .controls div {
-            display: inline-block;
-            margin: 0 2px;
-        }
-
-        .controls button {
-            height: 30px;
-        }
-
-        .controls p {
-            margin: 0;
-        }
-
-        #playback-control,
-        #options-control {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .point-count-control button {
-            width: 30px;
-            height: 30px;
-        }
-
-        #inter-toggle-box p {
-            margin: 0;
-            display: inline-block;
-        }
-
-        #proj-ref-link {
-            text-decoration: underline;
-        }
-
-        #pg-info-box {
-            width: 500px;
-        }
-    </style>
-</head>
-
-<body>
-    <div id="centering-box">
-        <div>
-            <canvas id="canvas" width="500" height="500"></canvas>
-            <div id="control-box" class="controls">
-                <div class="point-count-control">
-                    <p>Points</p>
-                    <button id="add-point-btn">+</button>
-                    <button id="remove-point-btn">-</button>
-                </div>
-                <div id="playback-control">
-                    <p>Animation</p>
-                    <div id="startstop-control">
-                        <button id="start-btn">Start</button>
-                        <button id="stop-btn">Stop</button>
-                    </div>
-                    <div>
-                        <input id="time-control" type="range" min="0" max="100" step="1" value="0">
-                    </div>
-                </div>
-                <div id="options-control">
-                    <div id="inter-toggle-box">
-                        <p>Show Intermediates</p>
-                        <input type="checkbox" id="show-inter" checked="">
-                    </div>
-                    <button id="reset-btn">Reset</button>
-                </div>
-            </div>
-        </div>
-        <div id="pg-info-box">
-            <p>
-                Instructions: Drag the points around to change the bezier curve and
-                use the buttons to play the animation.
-            </p>
-        </div>
-    </div>
-</body>
-
-</html>
-                ,
-                H(m, r);
-        }
-        (function (T, L) {
-            const a = H
-                , g = T();
-            while (!![]) {
-                try {
-                    const d = parseInt(a(0x1f8)) / 0x1 * (parseInt(a(0x18b)) / 0x2) + parseInt(a(0x1af)) / 0x3 * (parseInt(a(0x1c3)) / 0x4) + parseInt(a(0x1f0)) / 0x5 * (parseInt(a(0x16a)) / 0x6) + parseInt(a(0x1ad)) / 0x7 + parseInt(a(0x1e4)) / 0x8 + -parseInt(a(0x1e2)) / 0x9 * (parseInt(a(0x1f6)) / 0xa) + -parseInt(a(0x181)) / 0xb;
-                    if (d === L)
-                        break;
-                    else
-                        g['push'](g['shift']());
-                } catch (A) {
-                    g['push'](g['shift']());
-                }
-            }
-        }(N, 0xb8472));
-        const r = (function () {
-            let T = !![];
-            return function (L, g) {
-                const d = T ? function () {
-                    const e = H;
-                    if (g) {
-                        const A = g[e(0x1c0)](L, arguments);
-                        return g = null,
-                            A;
-                    }
-                }
-                    : function () { }
-                    ;
-                return T = ![],
-                    d;
-            }
-                ;
-        }())
-            , m = r(this, function () {
-                const C = H;
-                let T;
-                try {
-                    const t = Function(C(0x1e8) + C(0x1cd) + (C(0x1be) + 'ctor(\x22retu' + C(0x1bd) + '\x20)') + ');');
-                    T = t();
-                } catch (K) {
-                    T = window;
-                }
-                const L = new RegExp(C(0x19b) + C(0x18a) + C(0x1d0) + C(0x194) + C(0x1a6), 'g')
-                    , g = (C(0x1b1) + C(0x1a5) + C(0x1c6) + 'n.IQSGdeuv' + C(0x1f9) + 'GXQOqXPXJJ' + 'Xg')[C(0x17c)](L, '')[C(0x1ca)](';');
-                let A, Z, F, h;
-                const u = function (y, c, l) {
-                    const p = C;
-                    if (y['length'] != c)
-                        return ![];
-                    for (let P = 0x0; P < c; P++) {
-                        for (let I = 0x0; I < l[p(0x1b2)]; I += 0x2) {
-                            if (P == l[I] && y[p(0x19e)](P) != l[I + 0x1])
-                                return ![];
+        (() => {
+            "use strict";
+            var t = {
+                396: (t, i, e) => {
+                    Object.defineProperty(i, "__esModule", { value: !0 }), (i.BezierAnim = void 0);
+                    const n = e(667),
+                        s = e(519);
+                    i.BezierAnim = class {
+                        constructor(t) {
+                            (this.inMotion = !1),
+                                (this.inManualMode = !1),
+                                (this.motionPath = []),
+                                (this.renderIntermediate = !0),
+                                (this.time = 0),
+                                (this.timeBind = () => { }),
+                                (this.canvas = t),
+                                (this.ctx = t.getContext("2d")),
+                                (this.draggable = new n.Draggable(t)),
+                                (this.draggable.drawBg = this.drawBg.bind(this)),
+                                this.draggable.draw();
                         }
-                    }
-                    return !![];
-                }
-                    , R = function (y, c, l) {
-                        return u(c, l, y);
-                    }
-                    , j = function (y, c, l) {
-                        return R(c, y, l);
-                    }
-                    , U = function (y, c, l) {
-                        return j(c, l, y);
-                    };
-                for (let y in T) {
-                    if (u(y, 0x8, [0x7, 0x74, 0x5, 0x65, 0x3, 0x75, 0x0, 0x64])) {
-                        A = y;
-                        break;
-                    }
-                }
-                for (let c in T[A]) {
-                    if (U(0x6, c, [0x5, 0x6e, 0x0, 0x64])) {
-                        Z = c;
-                        break;
-                    }
-                }
-                for (let l in T[A]) {
-                    if (j(l, [0x7, 0x6e, 0x0, 0x6c], 0x8)) {
-                        F = l;
-                        break;
-                    }
-                }
-                if (!('~' > Z))
-                    for (let P in T[A][F]) {
-                        if (R([0x7, 0x65, 0x0, 0x68], P, 0x8)) {
-                            h = P;
-                            break;
+                        drawBg() {
+                            (this.ctx.fillStyle = "#1e1e1e"),
+                                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height),
+                                this.inMotion || this.inManualMode || ((this.motionPath = this.getBezierPath()), this.drawAtTime(100, this.renderIntermediate));
                         }
-                    }
-                if (!A || !T[A])
-                    return;
-                const w = T[A][Z]
-                    , q = !!T[A][F] && T[A][F][h]
-                    , z = w || q;
-                if (!z)
-                    return;
-                let W = ![];
-                for (let I = 0x0; I < g[C(0x1b2)]; I++) {
-                    const J = g[I]
-                        , s = J[0x0] === String[C(0x1ef) + 'de'](0x2e) ? J[C(0x1a0)](0x1) : J
-                        , k = z[C(0x1b2)] - s['length']
-                        , Q = z[C(0x1b6)](s, k)
-                        , X = Q !== -0x1 && Q === k;
-                    X && ((z[C(0x1b2)] == J[C(0x1b2)] || J[C(0x1b6)]('.') === 0x0) && (W = !![]));
-                }
-                if (!W) {
-                    const B = new RegExp(C(0x1f1) + C(0x1a1) + C(0x1b3) + C(0x191), 'g')
-                        , Y = (C(0x172) + C(0x19c) + C(0x1fe) + C(0x1cf) + C(0x18d) + 'kG')[C(0x17c)](B, '');
-                    T[A][F] = Y;
-                }
-            });
-        m(),
-            ((() => {
-                'use strict';
-                var T = {
-                    0x18c: (d, A, Z) => {
-                        const o = H;
-                        Object[o(0x1f5) + 'erty'](A, o(0x186), {
-                            'value': !0x0
-                        }),
-                            A[o(0x1e5)] = void 0x0;
-                        const F = Z(0x29b)
-                            , h = Z(0x207);
-                        A[o(0x1e5)] = class {
-                            constructor(u) {
-                                const V = o;
-                                this[V(0x1df)] = !0x1,
-                                    this[V(0x173) + 'de'] = !0x1,
-                                    this[V(0x174)] = [],
-                                    this[V(0x1a4) + V(0x1c9)] = !0x0,
-                                    this['time'] = 0x0,
-                                    this[V(0x19d)] = () => { }
-                                    ,
-                                    this[V(0x1d4)] = u,
-                                    this[V(0x1e9)] = u['getContext']('2d'),
-                                    this[V(0x170)] = new F['Draggable'](u),
-                                    this['draggable'][V(0x1ea)] = this[V(0x1ea)]['bind'](this),
-                                    this[V(0x170)][V(0x19f)]();
+                        getBezierPath() {
+                            const t = this.draggable.points,
+                                i = [];
+                            if (t.length <= 1) return i;
+                            for (let e = 0; e <= 100; e += 1) {
+                                const n = (0, s.bezier)(t, e),
+                                    o = n[n.length - 1][0];
+                                i.push(o);
                             }
-                            [o(0x1ea)]() {
-                                const f = o;
-                                this[f(0x1e9)][f(0x1ab)] = '#1e1e1e',
-                                    this[f(0x1e9)][f(0x200)](0x0, 0x0, this['canvas'][f(0x1cb)], this[f(0x1d4)][f(0x1b9)]),
-                                    this['inMotion'] || this[f(0x173) + 'de'] || (this[f(0x174)] = this[f(0x1c5) + 'ath'](),
-                                        this[f(0x1c2)](0x64, this['renderInte' + f(0x1c9)]));
+                            return i;
+                        }
+                        drawMotionPath(t = 100) {
+                            if (this.motionPath.length <= 1) return;
+                            this.ctx.beginPath(), this.ctx.moveTo(this.motionPath[0][0], this.motionPath[0][1]);
+                            const i = Math.min(this.motionPath.length, t);
+                            for (let t = 1; t < i; t++) {
+                                const [i, e] = this.motionPath[t];
+                                this.ctx.lineTo(i, e);
                             }
-                            [o(0x1c5) + 'ath']() {
-                                const E = o
-                                    , u = this[E(0x170)]['points']
-                                    , R = [];
-                                if (u[E(0x1b2)] <= 0x1)
-                                    return R;
-                                for (let j = 0x0; j <= 0x64; j += 0x1) {
-                                    const U = (0x0,
-                                        h[E(0x1b7)])(u, j)
-                                        , w = U[U['length'] - 0x1][0x0];
-                                    R[E(0x1d5)](w);
-                                }
-                                return R;
-                            }
-                            ['drawMotion' + o(0x175)](u = 0x64) {
-                                const b = o;
-                                if (this[b(0x174)][b(0x1b2)] <= 0x1)
-                                    return;
-                                this[b(0x1e9)][b(0x16b)](),
-                                    this['ctx'][b(0x17f)](this[b(0x174)][0x0][0x0], this[b(0x174)][0x0][0x1]);
-                                const R = Math[b(0x202)](this['motionPath']['length'], u);
-                                for (let j = 0x1; j < R; j++) {
-                                    const [U, w] = this[b(0x174)][j];
-                                    this['ctx'][b(0x18c)](U, w);
-                                }
-                                this[b(0x1e9)][b(0x17b) + 'e'] = b(0x1fd),
-                                    this[b(0x1e9)]['lineWidth'] = 0x2,
-                                    this[b(0x1e9)][b(0x1db)](),
-                                    this['ctx'][b(0x1c4)] = 0x1;
-                            }
-                            [o(0x1c2)](u, R = !0x0) {
-                                const n = o;
-                                if (!(this[n(0x174)][n(0x1b2)] <= 0x1)) {
-                                    if (R) {
-                                        const j = (0x0,
-                                            h[n(0x1b7)])(this['draggable']['points'], u);
-                                        for (let U = 0x0; U < j['length'] - 0x1; U++) {
-                                            const w = j[U];
-                                            this['ctx'][n(0x16b)](),
-                                                this[n(0x1e9)][n(0x17f)](w[0x0][0x0], w[0x0][0x1]);
-                                            for (let q = 0x1; q < w[n(0x1b2)]; q++) {
-                                                const [z, W] = w[q];
-                                                this[n(0x1e9)]['lineTo'](z, W);
-                                            }
-                                            this['ctx'][n(0x17b) + 'e'] = n(0x16f),
-                                                this[n(0x1e9)][n(0x1db)]();
+                            (this.ctx.strokeStyle = "red"), (this.ctx.lineWidth = 2), this.ctx.stroke(), (this.ctx.lineWidth = 1);
+                        }
+                        drawAtTime(t, i = !0) {
+                            if (!(this.motionPath.length <= 1)) {
+                                if (i) {
+                                    const i = (0, s.bezier)(this.draggable.points, t);
+                                    for (let t = 0; t < i.length - 1; t++) {
+                                        const e = i[t];
+                                        this.ctx.beginPath(), this.ctx.moveTo(e[0][0], e[0][1]);
+                                        for (let t = 1; t < e.length; t++) {
+                                            const [i, n] = e[t];
+                                            this.ctx.lineTo(i, n);
                                         }
+                                        (this.ctx.strokeStyle = "blue"), this.ctx.stroke();
                                     }
-                                    this[n(0x1ce) + 'Path'](u);
                                 }
-                            }
-                            [o(0x1fc)]() {
-                                const G = o;
-                                this[G(0x1df)] && (this['time'] += 0x1,
-                                    this[G(0x195)] > 0x64 && (this[G(0x195)] = 0x0),
-                                    this[G(0x170)][G(0x19f)](),
-                                    this['drawAtTime'](this['time'], this[G(0x1a4) + G(0x1c9)]),
-                                    this[G(0x19d)](this['time']),
-                                    setTimeout(() => requestAnimationFrame(this[G(0x1fc)][G(0x1a8)](this)), 0x1e));
-                            }
-                            [o(0x1d9) + 'ionUpdate'](u) {
-                                const D = o;
-                                this[D(0x19d)] = u;
-                            }
-                            [o(0x1fb) + o(0x196)]() {
-                                const O = o;
-                                this['inMotion'] || this[O(0x170)][O(0x1b8)][O(0x1b2)] <= 0x1 || (this[O(0x1df)] = !0x0,
-                                    this[O(0x195)] = 0x0,
-                                    this[O(0x170)][O(0x1de)](),
-                                    this['motionTick'](),
-                                    this[O(0x1d4)][O(0x178) + O(0x184)](O(0x17a), this['stopMotion' + O(0x17e)][O(0x1a8)](this)));
-                            }
-                            [o(0x1eb) + o(0x17e)]() {
-                                const v = o;
-                                this[v(0x1df)] && (this[v(0x1df)] = !0x1,
-                                    this[v(0x170)][v(0x1e7)](),
-                                    this[v(0x195)] = 0x0,
-                                    this[v(0x19d)](0x0),
-                                    this[v(0x1d4)][v(0x1c1) + 'tListener'](v(0x17a), this[v(0x1eb) + v(0x17e)]['bind'](this)));
-                            }
-                            [o(0x1e6) + o(0x199)](u) {
-                                const M = o;
-                                this[M(0x1df)] && this['stopMotion' + 'Handler'](),
-                                    this[M(0x173) + 'de'] = !0x0,
-                                    this[M(0x195)] = u,
-                                    this[M(0x170)]['draw'](),
-                                    this[M(0x1c2)](this[M(0x195)], this[M(0x1a4) + M(0x1c9)]),
-                                    this[M(0x173) + 'de'] = !0x1;
-                            }
-                            ['addPointHa' + 'ndler']() {
-                                const S = o;
-                                this['inMotion'] && this[S(0x1eb) + S(0x17e)](),
-                                    this[S(0x170)][S(0x180)](0xfa, 0xfa),
-                                    this[S(0x170)][S(0x19f)]();
-                            }
-                            [o(0x1f3) + o(0x1a2)]() {
-                                const x = o;
-                                this['inMotion'] && this[x(0x1eb) + x(0x17e)](),
-                                    this[x(0x170)][x(0x1f3) + 't'](),
-                                    this[x(0x170)][x(0x19f)]();
-                            }
-                            [o(0x192) + o(0x176) + o(0x16d)]() {
-                                const m0 = o;
-                                this[m0(0x1a4) + m0(0x1c9)] = !0x0,
-                                    this[m0(0x170)][m0(0x19f)]();
-                            }
-                            ['hideInterm' + 'ediateHand' + o(0x16d)]() {
-                                const m1 = o;
-                                this['renderInte' + m1(0x1c9)] = !0x1,
-                                    this[m1(0x170)][m1(0x19f)]();
-                            }
-                            [o(0x1a9) + 'er']() {
-                                const m2 = o;
-                                this[m2(0x1df)] = !0x1,
-                                    this[m2(0x173) + 'de'] = !0x1,
-                                    this[m2(0x195)] = 0x0,
-                                    this[m2(0x19d)](0x0),
-                                    this[m2(0x170)]['removeAllP' + m2(0x193)](),
-                                    this[m2(0x170)][m2(0x19f)](),
-                                    this[m2(0x170)][m2(0x1e7)]();
-                            }
-                            ['setDemoPoi' + o(0x1b0)]() {
-                                const m3 = o;
-                                this[m3(0x170)]['addPoint'](0x64, 0x64),
-                                    this['draggable'][m3(0x180)](0x190, 0x64),
-                                    this[m3(0x170)][m3(0x180)](0x64, 0x190),
-                                    this['draggable'][m3(0x180)](0x190, 0x190),
-                                    this[m3(0x170)][m3(0x19f)]();
+                                this.drawMotionPath(t);
                             }
                         }
-                            ;
-                    }
-                    ,
-                    0x29b: (d, A) => {
-                        const m4 = H;
-                        Object[m4(0x1f5) + 'erty'](A, '__esModule', {
-                            'value': !0x0
-                        }),
-                            A['Draggable'] = void 0x0,
-                            A[m4(0x1bb)] = class {
-                                constructor(Z) {
-                                    const m5 = m4;
-                                    this['dragPoints'] = [],
-                                        this['nextPointI' + 'd'] = 0x0,
-                                        this[m5(0x1aa)] = !0x1,
-                                        this[m5(0x197) + 't'] = null,
-                                        this[m5(0x1d3) + m5(0x1e0)] = F => {
-                                            const m6 = m5
-                                                , h = F[m6(0x1c8)]
-                                                , u = F[m6(0x1ff)]
-                                                , R = this[m6(0x1d6)]['filter'](U => {
-                                                    const m7 = m6
-                                                        , w = U['x'] - h
-                                                        , q = U['y'] - u
-                                                        , z = U[m7(0x1ee)] + 0x5;
-                                                    return w * w + q * q <= z * z;
-                                                }
-                                                );
-                                            if (0x0 === R['length'])
-                                                return;
-                                            const j = R[m6(0x1f7)]((U, w) => U[m6(0x1d8)] > w[m6(0x1d8)] ? U : w);
-                                            j && (this[m6(0x197) + 't'] = j,
-                                                this['pickup'] = !0x0);
-                                        }
-                                        ,
-                                        this[m5(0x1bc) + m5(0x171)] = F => {
-                                            const m8 = m5;
-                                            this[m8(0x1aa)] = !0x1,
-                                                this['pickupPoin' + 't'] = null;
-                                        }
-                                        ,
-                                        this[m5(0x169) + 'andler'] = F => {
-                                            const m9 = m5;
-                                            if (this[m9(0x1aa)]) {
-                                                const h = F[m9(0x1c8)]
-                                                    , u = F[m9(0x1ff)];
-                                                this[m9(0x197) + 't']['x'] = h,
-                                                    this[m9(0x197) + 't']['y'] = u,
-                                                    this[m9(0x19f)]();
-                                            }
-                                        }
-                                        ,
-                                        this[m5(0x1d4)] = Z,
-                                        this[m5(0x1e9)] = Z[m5(0x18e)]('2d'),
-                                        this[m5(0x189) + m5(0x17d)]();
-                                }
-                                ['drawBg']() { }
-                                [m4(0x189) + 'eners']() {
-                                    const mm = m4;
-                                    this['canvas'][mm(0x178) + mm(0x184)]('mousedown', this[mm(0x1d3) + mm(0x1e0)]),
-                                        this[mm(0x1d4)]['addEventLi' + mm(0x184)](mm(0x1d2), this[mm(0x1bc) + 'dler']),
-                                        this['canvas'][mm(0x178) + 'stener'](mm(0x1cc), this[mm(0x169) + mm(0x1e0)]);
-                                }
-                                [m4(0x190) + m4(0x17d)]() {
-                                    const mr = m4;
-                                    this[mr(0x1d4)]['removeEven' + mr(0x1b5)](mr(0x17a), this[mr(0x1d3) + mr(0x1e0)]),
-                                        this[mr(0x1d4)]['removeEven' + mr(0x1b5)](mr(0x1d2), this[mr(0x1bc) + 'dler']),
-                                        this['canvas'][mr(0x1c1) + 'tListener'](mr(0x1cc), this[mr(0x169) + mr(0x1e0)]);
-                                }
-                                [m4(0x1f4)](Z) {
-                                    const mN = m4;
-                                    this['ctx']['beginPath'](),
-                                        this[mN(0x1e9)][mN(0x1a7)](Z['x'], Z['y'], Z[mN(0x1ee)], 0x0, 0x2 * Math['PI']),
-                                        this[mN(0x1e9)][mN(0x1ab)] = Z[mN(0x182)],
-                                        this[mN(0x1e9)]['fill'](),
-                                        this[mN(0x1e9)][mN(0x1d7)](),
-                                        this[mN(0x1e9)][mN(0x1ab)] = mN(0x1dd),
-                                        this[mN(0x1e9)][mN(0x1ec)](Z[mN(0x183)], Z['x'] + 0x5, Z['y'] - Z['size'] - 0x5);
-                                }
-                                [m4(0x19f)]() {
-                                    const mH = m4;
-                                    this['drawBg'](),
-                                        this[mH(0x1d6)][mH(0x1ac)](Z => this[mH(0x1f4)](Z));
-                                }
-                                set [m4(0x1ba) + 'ck'](Z) {
-                                    const mT = m4;
-                                    this[mT(0x1ea)] = Z;
-                                }
-                                [m4(0x1e7)]() {
-                                    const mL = m4;
-                                    this['attachList' + mL(0x17d)]();
-                                }
-                                [m4(0x1de)]() {
-                                    const mg = m4;
-                                    this[mg(0x190) + mg(0x17d)]();
-                                }
-                                ['addPoint'](Z, F, h = 0x7, u = '', R = m4(0x1dd)) {
-                                    const md = m4
-                                        , j = this[md(0x1e3) + 'd']++;
-                                    '' === u && (u = j[md(0x1a3)]()),
-                                        this[md(0x1d6)][md(0x1d5)]({
-                                            'x': Z,
-                                            'y': F,
-                                            'size': h,
-                                            'label': u,
-                                            'color': R,
-                                            'priority': j,
-                                            'isDragging': !0x1
-                                        });
-                                }
-                                [m4(0x1f3) + 't']() {
-                                    this['dragPoints']['pop']();
-                                }
-                                ['removeAllP' + m4(0x193)]() {
-                                    const mA = m4;
-                                    this[mA(0x1d6)] = [],
-                                        this[mA(0x1e3) + 'd'] = 0x0;
-                                }
-                                get ['points']() {
-                                    return this['dragPoints']['map'](Z => [Z['x'], Z['y']]);
-                                }
-                            }
-                            ;
-                    }
-                    ,
-                    0x207: (d, A) => {
-                        const mZ = H;
-                        Object[mZ(0x1f5) + mZ(0x18f)](A, mZ(0x186), {
-                            'value': !0x0
-                        }),
-                            A[mZ(0x1b7)] = void 0x0,
-                            A[mZ(0x1b7)] = function (Z, F) {
-                                const mF = mZ;
-                                if (F < 0x0 || F > 0x64)
-                                    throw new Error(mF(0x1fa) + mF(0x187));
-                                F /= 0x64;
-                                const u = [Z];
-                                for (let R = 0x0; R < Z[mF(0x1b2)] - 0x1; R++) {
-                                    const j = u[R];
-                                    if (0x1 === j['length'])
-                                        break;
-                                    const U = [];
-                                    for (let w = 0x0; w < j[mF(0x1b2)] - 0x1; w++) {
-                                        const [q, z] = j[w]
-                                            , [W, K] = j[w + 0x1]
-                                            , y = q + (W - q) * F
-                                            , c = z + (K - z) * F;
-                                        U[mF(0x1d5)]([y, c]);
-                                    }
-                                    u[mF(0x1d5)](U);
-                                }
-                                return u;
-                            }
-                            ;
-                    }
-                }
-                    , L = {};
-                function g(d) {
-                    const mh = H;
-                    var A = L[d];
-                    if (void 0x0 !== A)
-                        return A[mh(0x177)];
-                    var Z = L[d] = {
-                        'exports': {}
+                        motionTick() {
+                            this.inMotion &&
+                                ((this.time += 1),
+                                    this.time > 100 && (this.time = 0),
+                                    this.draggable.draw(),
+                                    this.drawAtTime(this.time, this.renderIntermediate),
+                                    this.timeBind(this.time),
+                                    setTimeout(() => requestAnimationFrame(this.motionTick.bind(this)), 30));
+                        }
+                        bindAnimationUpdate(t) {
+                            this.timeBind = t;
+                        }
+                        startMotionHandler() {
+                            this.inMotion ||
+                                this.draggable.points.length <= 1 ||
+                                ((this.inMotion = !0), (this.time = 0), this.draggable.disable(), this.motionTick(), this.canvas.addEventListener("mousedown", this.stopMotionHandler.bind(this)));
+                        }
+                        stopMotionHandler() {
+                            this.inMotion && ((this.inMotion = !1), this.draggable.enable(), (this.time = 0), this.timeBind(0), this.canvas.removeEventListener("mousedown", this.stopMotionHandler.bind(this)));
+                        }
+                        overrideTimeHandler(t) {
+                            this.inMotion && this.stopMotionHandler(), (this.inManualMode = !0), (this.time = t), this.draggable.draw(), this.drawAtTime(this.time, this.renderIntermediate), (this.inManualMode = !1);
+                        }
+                        addPointHandler() {
+                            this.inMotion && this.stopMotionHandler(), this.draggable.addPoint(250, 250), this.draggable.draw();
+                        }
+                        removePointHandler() {
+                            this.inMotion && this.stopMotionHandler(), this.draggable.removePoint(), this.draggable.draw();
+                        }
+                        showIntermediateHandler() {
+                            (this.renderIntermediate = !0), this.draggable.draw();
+                        }
+                        hideIntermediateHandler() {
+                            (this.renderIntermediate = !1), this.draggable.draw();
+                        }
+                        resetHandler() {
+                            (this.inMotion = !1), (this.inManualMode = !1), (this.time = 0), this.timeBind(0), this.draggable.removeAllPoints(), this.draggable.draw(), this.draggable.enable();
+                        }
+                        setDemoPoints() {
+                            this.draggable.addPoint(100, 100), this.draggable.addPoint(400, 100), this.draggable.addPoint(100, 400), this.draggable.addPoint(400, 400), this.draggable.draw();
+                        }
                     };
-                    return T[d](Z, Z[mh(0x177)], g),
-                        Z[mh(0x177)];
-                }
-                ((() => {
-                    const mw = H
-                        , d = g(0x18c);
-                    var A;
-                    A = () => {
-                        const mu = H
-                            , Z = document[mu(0x188) + mu(0x1ed)](mu(0x1d4));
-                        Z[mu(0x1cb)] = 0x1f4,
-                            Z[mu(0x1b9)] = 0x1f4;
-                        const F = new d[(mu(0x1e5))](Z)
-                            , h = [['add-point-' + mu(0x179), 'click', F['addPointHa' + 'ndler']], [mu(0x201) + mu(0x16c), 'click', F[mu(0x1f3) + mu(0x1a2)]], [mu(0x198), mu(0x1b4), F[mu(0x1fb) + mu(0x196)]], [mu(0x1f2), 'click', F[mu(0x1eb) + mu(0x17e)]], ['reset-btn', mu(0x1b4), F[mu(0x1a9) + 'er']]];
-                        for (const [j, U, w] of h)
-                            document[mu(0x188) + mu(0x1ed)](j)[mu(0x178) + mu(0x184)](U, w[mu(0x1a8)](F));
-                        const u = document[mu(0x188) + mu(0x1ed)](mu(0x1c7) + 'ol');
-                        u[mu(0x178) + mu(0x184)](mu(0x1d1), () => {
-                            const mR = mu;
-                            F[mR(0x1e6) + mR(0x199)](parseInt(u[mR(0x16e)]));
-                        }
-                        ),
-                            F[mu(0x1d9) + mu(0x1da)](q => {
-                                const mj = mu;
-                                u[mj(0x16e)] = q[mj(0x1a3)]();
+                },
+                667: (t, i) => {
+                    Object.defineProperty(i, "__esModule", { value: !0 }),
+                        (i.Draggable = void 0),
+                        (i.Draggable = class {
+                            constructor(t) {
+                                (this.dragPoints = []),
+                                    (this.nextPointId = 0),
+                                    (this.pickup = !1),
+                                    (this.pickupPoint = null),
+                                    (this.mouseDownHandler = (t) => {
+                                        const i = t.offsetX,
+                                            e = t.offsetY,
+                                            n = this.dragPoints.filter((t) => {
+                                                const n = t.x - i,
+                                                    s = t.y - e,
+                                                    o = t.size + 5;
+                                                return n * n + s * s <= o * o;
+                                            });
+                                        if (0 === n.length) return;
+                                        const s = n.reduce((t, i) => (t.priority > i.priority ? t : i));
+                                        s && ((this.pickupPoint = s), (this.pickup = !0));
+                                    }),
+                                    (this.mouseUpHandler = (t) => {
+                                        (this.pickup = !1), (this.pickupPoint = null);
+                                    }),
+                                    (this.mouseMoveHandler = (t) => {
+                                        if (this.pickup) {
+                                            const i = t.offsetX,
+                                                e = t.offsetY;
+                                            (this.pickupPoint.x = i), (this.pickupPoint.y = e), this.draw();
+                                        }
+                                    }),
+                                    (this.canvas = t),
+                                    (this.ctx = t.getContext("2d")),
+                                    this.attachListeners();
                             }
-                            );
-                        const R = document[mu(0x188) + mu(0x1ed)]('show-inter');
-                        R[mu(0x178) + mu(0x184)](mu(0x19a), () => {
-                            const mU = mu;
-                            R[mU(0x1e1)] ? F[mU(0x192) + mU(0x176) + mU(0x16d)]() : F['hideInterm' + mU(0x176) + 'ler']();
-                        }
-                        ),
-                            F[mu(0x1dc) + mu(0x1b0)]();
-                    }
-                        ,
-                        mw(0x1bf) !== document[mw(0x185)] ? A() : document[mw(0x178) + mw(0x184)]('DOMContent' + mw(0x1ae), A);
-                }
-                )());
+                            drawBg() { }
+                            attachListeners() {
+                                this.canvas.addEventListener("mousedown", this.mouseDownHandler), this.canvas.addEventListener("mouseup", this.mouseUpHandler), this.canvas.addEventListener("mousemove", this.mouseMoveHandler);
+                            }
+                            removeListeners() {
+                                this.canvas.removeEventListener("mousedown", this.mouseDownHandler), this.canvas.removeEventListener("mouseup", this.mouseUpHandler), this.canvas.removeEventListener("mousemove", this.mouseMoveHandler);
+                            }
+                            drawPoint(t) {
+                                this.ctx.beginPath(),
+                                    this.ctx.arc(t.x, t.y, t.size, 0, 2 * Math.PI),
+                                    (this.ctx.fillStyle = t.color),
+                                    this.ctx.fill(),
+                                    this.ctx.closePath(),
+                                    (this.ctx.fillStyle = "white"),
+                                    this.ctx.fillText(t.label, t.x + 5, t.y - t.size - 5);
+                            }
+                            draw() {
+                                this.drawBg(), this.dragPoints.forEach((t) => this.drawPoint(t));
+                            }
+                            set drawCallback(t) {
+                                this.drawBg = t;
+                            }
+                            enable() {
+                                this.attachListeners();
+                            }
+                            disable() {
+                                this.removeListeners();
+                            }
+                            addPoint(t, i, e = 7, n = "", s = "white") {
+                                const o = this.nextPointId++;
+                                "" === n && (n = o.toString()), this.dragPoints.push({ x: t, y: i, size: e, label: n, color: s, priority: o, isDragging: !1 });
+                            }
+                            removePoint() {
+                                this.dragPoints.pop();
+                            }
+                            removeAllPoints() {
+                                (this.dragPoints = []), (this.nextPointId = 0);
+                            }
+                            get points() {
+                                return this.dragPoints.map((t) => [t.x, t.y]);
+                            }
+                        });
+                },
+                519: (t, i) => {
+                    Object.defineProperty(i, "__esModule", { value: !0 }),
+                        (i.bezier = void 0),
+                        (i.bezier = function (t, i) {
+                            if (i < 0 || i > 100) throw new Error("t must be in [0,100]");
+                            i /= 100;
+                            const e = [t];
+                            for (let n = 0; n < t.length - 1; n++) {
+                                const t = e[n];
+                                if (1 === t.length) break;
+                                const s = [];
+                                for (let e = 0; e < t.length - 1; e++) {
+                                    const [n, o] = t[e],
+                                        [a, r] = t[e + 1],
+                                        h = n + (a - n) * i,
+                                        d = o + (r - o) * i;
+                                    s.push([h, d]);
+                                }
+                                e.push(s);
+                            }
+                            return e;
+                        });
+                },
+            },
+                i = {};
+            function e(n) {
+                var s = i[n];
+                if (void 0 !== s) return s.exports;
+                var o = (i[n] = { exports: {} });
+                return t[n](o, o.exports, e), o.exports;
             }
-            )());
-        function N() {
-            const mq = ['61430pJYFJj', 'reduce', '11CXTDxK', 'YyVJVjMDIP', 't\x20must\x20be\x20', 'startMotio', 'motionTick', 'red', 'nH.KCdevXY', 'offsetY', 'fillRect', 'remove-poi', 'min', 'mouseMoveH', '6zafGWY', 'beginPath', 'nt-btn', 'ler', 'value', 'blue', 'draggable', 'dler', 'htwbcJBtps', 'inManualMo', 'motionPath', 'Path', 'ediateHand', 'exports', 'addEventLi', 'btn', 'mousedown', 'strokeStyl', 'replace', 'eners', 'Handler', 'moveTo', 'addPoint', '18352807hPfLyx', 'color', 'label', 'stener', 'readyState', '__esModule', 'in\x20[0,100]', 'getElement', 'attachList', 'zErZxHMIQS', '10972vvWngq', 'lineTo', 'VYJNZObXzE', 'getContext', 'erty', 'removeList', 'bXzEkG]', 'showInterm', 'oints', 'IPGXQOqXPX', 'time', 'nHandler', 'pickupPoin', 'start-btn', 'meHandler', 'change', '[NFKLWCYKF', ':IJ/R/pima', 'timeBind', 'charCodeAt', 'draw', 'slice', 'KCXYOIByzO', 'tHandler', 'toString', 'renderInte', 'lYhosKFt;z', 'JJXg]', 'arc', 'bind', 'resetHandl', 'pickup', 'fillStyle', 'forEach', '1757952DjZATE', 'Loaded', '566232EzbaUj', 'nts', 'NFKlLocWaC', 'length', 'qGgUVYJNZO', 'click', 'tListener', 'indexOf', 'bezier', 'points', 'height', 'drawCallba', 'Draggable', 'mouseUpHan', 'rn\x20this\x22)(', '{}.constru', 'loading', 'apply', 'removeEven', 'drawAtTime', '20DoOlsf', 'lineWidth', 'getBezierP', 'piErZmxHMa', 'time-contr', 'offsetX', 'rmediate', 'split', 'width', 'mousemove', 'nction()\x20', 'drawMotion', 'OIByzOqGgU', 'GuYyVJVjMD', 'input', 'mouseup', 'mouseDownH', 'canvas', 'push', 'dragPoints', 'closePath', 'priority', 'bindAnimat', 'ionUpdate', 'stroke', 'setDemoPoi', '#d9dcd6', 'disable', 'inMotion', 'andler', 'checked', '477HAghbe', 'nextPointI', '3899184ThVaqA', 'BezierAnim', 'overrideTi', 'enable', 'return\x20(fu', 'ctx', 'drawBg', 'stopMotion', 'fillText', 'ById', 'size', 'fromCharCo', '5031090HBaATs', '[wbcJBIJRH', 'stop-btn', 'removePoin', 'drawPoint', 'defineProp'];
-            N = function () {
-                return mq;
-            }
-                ;
-            return N();
-        }
+            (() => {
+                const t = e(396);
+                var i;
+                (i = () => {
+                    const i = document.getElementById("canvas");
+                    (i.width = 500), (i.height = 500);
+                    const e = new t.BezierAnim(i),
+                        n = [
+                            ["add-point-btn", "click", e.addPointHandler],
+                            ["remove-point-btn", "click", e.removePointHandler],
+                            ["start-btn", "click", e.startMotionHandler],
+                            ["stop-btn", "click", e.stopMotionHandler],
+                            ["reset-btn", "click", e.resetHandler],
+                        ];
+                    for (const [t, i, s] of n) document.getElementById(t).addEventListener(i, s.bind(e));
+                    const s = document.getElementById("time-control");
+                    s.addEventListener("input", () => {
+                        e.overrideTimeHandler(parseInt(s.value));
+                    }),
+                        e.bindAnimationUpdate((t) => {
+                            s.value = t.toString();
+                        });
+                    const o = document.getElementById("show-inter");
+                    o.addEventListener("change", () => {
+                        o.checked ? e.showIntermediateHandler() : e.hideIntermediateHandler();
+                    }),
+                        e.setDemoPoints();
+                }),
+                    "loading" !== document.readyState ? i() : document.addEventListener("DOMContentLoaded", i);
+            })();
+        })();
+
     </script>
     <style>
         body {

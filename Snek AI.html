@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Snek AI</title>
+    <meta name="description" content="Snek AI">
+    <script>
+        (() => {
+            "use strict";
+            var t = {
+                923: (t, e, s) => {
+                    Object.defineProperty(e, "__esModule", {
+                        value: !0
+                    }),
+                        e.Game = e.Direction = void 0;
+                    const o = s(698);
+                    var n;
+                    !function (t) {
+                        t[t.UP = 0] = "UP",
+                            t[t.RIGHT = 1] = "RIGHT",
+                            t[t.DOWN = 2] = "DOWN",
+                            t[t.LEFT = 3] = "LEFT"
+                    }(n = e.Direction || (e.Direction = {})),
+                        e.Game = class {
+                            constructor() {
+                                this.snek = {
+                                    x: [40],
+                                    x_mask: [],
+                                    length: 1,
+                                    direction: n.RIGHT
+                                };
+                                for (let t = 0; t < 64; t++)
+                                    this.snek.x_mask.push(!1);
+                                this.snek.x_mask[40] = !0,
+                                    this.spawnFood(),
+                                    this.game_over = !1,
+                                    this.score = 0
+                            }
+                            spawnFood() {
+                                if (64 !== this.snek.length)
+                                    for (; this.food = Math.floor(64 * Math.random()),
+                                        this.snek.x_mask[this.food];)
+                                        ;
+                            }
+                            growSnek() {
+                                this.snek.length++,
+                                    this.snek.x.push(this.food);
+                                for (let t = 0; t < 64; t++)
+                                    this.snek.x_mask[t] = !1;
+                                for (let t = 0; t < this.snek.length; t++)
+                                    this.snek.x_mask[this.snek.x[t]] = !0
+                            }
+                            movePos(t) {
+                                if (this.game_over)
+                                    return;
+                                const e = this.snek.x[0];
+                                this.snek.x_mask[t] && t !== e ? this.game_over = !0 : (t === this.food ? (this.growSnek(),
+                                    this.spawnFood()) : (this.snek.x_mask[e] = !1,
+                                        this.snek.x.shift(),
+                                        this.snek.x.push(t),
+                                        this.snek.x_mask[t] = !0),
+                                    64 === this.snek.length && (this.game_over = !0))
+                            }
+                            reset() {
+                                this.snek = {
+                                    x: [40],
+                                    x_mask: [],
+                                    length: 1,
+                                    direction: n.RIGHT
+                                };
+                                for (let t = 0; t < 64; t++)
+                                    this.snek.x_mask.push(!1);
+                                this.snek.x_mask[40] = !0,
+                                    this.spawnFood(),
+                                    this.game_over = !1,
+                                    this.score = 0
+                            }
+                            nextTick() {
+                                const t = (0,
+                                    o.snekAI)(this.snek, this.food);
+                                this.movePos(t),
+                                    this.score = this.snek.length
+                            }
+                        }
+                }
+                ,
+                758: (t, e) => {
+                    Object.defineProperty(e, "__esModule", {
+                        value: !0
+                    }),
+                        e.Renderer = void 0,
+                        e.Renderer = class {
+                            constructor(t) {
+                                this.canvas = t,
+                                    this.ctx = t.getContext("2d")
+                            }
+                            drawSnek(t) {
+                                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height),
+                                    this.ctx.fillStyle = "white",
+                                    this.ctx.strokeStyle = "white",
+                                    this.ctx.lineWidth = 60;
+                                const e = 110
+                                    , s = 60;
+                                if (1 === t.length) {
+                                    const o = t[0] % 8 * e + s
+                                        , n = Math.floor(t[0] / 8) * e + s;
+                                    this.ctx.fillRect(o - 30, n - 30, 60, 60)
+                                } else {
+                                    this.ctx.beginPath();
+                                    const o = t[0] % 8 * e + s
+                                        , n = Math.floor(t[0] / 8) * e + s;
+                                    this.ctx.moveTo(o, n);
+                                    for (let o = 1; o < t.length; o++) {
+                                        const n = t[o] % 8 * e + s
+                                            , i = Math.floor(t[o] / 8) * e + s;
+                                        this.ctx.lineTo(n, i)
+                                    }
+                                    this.ctx.stroke()
+                                }
+                            }
+                            drawFood(t) {
+                                this.ctx.fillStyle = "red";
+                                const e = t % 8 * 110 + 60
+                                    , s = 110 * Math.floor(t / 8) + 60;
+                                this.ctx.fillRect(e - 30, s - 30, 60, 60)
+                            }
+                        }
+                }
+                ,
+                698: (t, e) => {
+                    Object.defineProperty(e, "__esModule", {
+                        value: !0
+                    }),
+                        e.snekAI = void 0;
+                    const s = [1, 2, 3, 4, 5, 6, 7, 15, 0, 17, 9, 10, 11, 12, 13, 14, 8, 18, 19, 20, 21, 22, 23, 31, 16, 33, 25, 26, 27, 28, 29, 30, 24, 34, 35, 36, 37, 38, 39, 47, 32, 49, 41, 42, 43, 44, 45, 46, 40, 50, 51, 52, 53, 54, 55, 63, 48, 56, 57, 58, 59, 60, 61, 62]
+                        , o = []
+                        , n = []
+                        , i = [];
+                    (() => {
+                        let t = 0
+                            , e = 0;
+                        for (; 0 != s[t];)
+                            o[t] = e,
+                                e++,
+                                t = s[t];
+                        o[t] = e;
+                        for (let t = 0; t < 64; t++)
+                            n[t] = [-1, -1, -1, -1],
+                                t % 8 != 0 && (n[t][0] = t - 1),
+                                t % 8 != 7 && (n[t][1] = t + 1),
+                                0 !== Math.floor(t / 8) && (n[t][2] = t - 8),
+                                7 !== Math.floor(t / 8) && (n[t][3] = t + 8);
+                        for (let t = 0; t < 64; t++)
+                            i[t] = !1
+                    }
+                    )(),
+                        e.snekAI = function (t, e) {
+                            const h = t.x[t.length - 1];
+                            for (let e = 0; e < 64; e++)
+                                i[e] = t.x_mask[e];
+                            i[t.x[0]] = !1;
+                            let r = o[e];
+                            const a = o[h]
+                                , c = o[t.x[0]]
+                                , l = [-1, -1, -1, -1];
+                            for (let t = 0; t < 4; t++) {
+                                const e = n[h][t];
+                                -1 === e || i[e] || (l[t] = o[e])
+                            }
+                            const k = r > a;
+                            if (t.length > 32)
+                                return s[h];
+                            let d = 0
+                                , x = -1;
+                            for (let t = 0; t < 4; t++) {
+                                const e = l[t];
+                                k || (r = 63),
+                                    e > d && -1 !== e && e > a && !(c < a && e < c || c > a && e > c) && e <= r && (d = l[t],
+                                        x = n[h][t])
+                            }
+                            return -1 === x ? s[h] : x
+                        }
+                }
+            }
+                , e = {};
+            function s(o) {
+                var n = e[o];
+                if (void 0 !== n)
+                    return n.exports;
+                var i = e[o] = {
+                    exports: {}
+                };
+                return t[o](i, i.exports, s),
+                    i.exports
+            }
+            (() => {
+                const t = s(923)
+                    , e = s(758);
+                var o;
+                o = () => {
+                    const s = new e.Renderer(document.getElementById("snek"))
+                        , o = new t.Game;
+                    !function t() {
+                        o.nextTick(),
+                            o.game_over && o.reset(),
+                            s.drawSnek(o.snek.x),
+                            s.drawFood(o.food),
+                            requestAnimationFrame(t)
+                    }()
+                }
+                    ,
+                    "loading" !== document.readyState ? o() : document.addEventListener("DOMContentLoaded", o)
+            }
+            )()
+        }
+        )();
+
+    </script>
+</head>
+
+<body>
+    <h1 class="header">
+        Optimizations of a Perfect Game of Snake
+    </h1>
+    <p style="font-size: 25px" class="header">Aarush Lanjharia, Aiden Lee, Jack Blecker</p>
+    <p style="font-size: 25px" class="header">December 1, 2023</p>
+    <section id="Abstract">
+        <h2>
+            1 &emsp; Abstract
+        </h2>
+        <p>
+            This report investigates methods of modifying Hamiltonian cycles without sacrificing hamiltonicity in order
+            to complete an optimized perfect game of Snake where the snake fills the entire 8x8 board (or any square
+            board with side lengths in multiples of 2) in the minimal amount of turns without hitting itself or the
+            walls until all the squares in the grid are filled. The importance of maintaining a Hamiltonian cycle at all
+            times ensures the snake never finds itself without a safe move, always having a path to any point on the
+            grid. Although there are multiple ways of creating a perfect game of snake including machine learning
+            techniques such as deep Q-learning and reinforcement learning, these are very time and computationally
+            intensive to both train and execute. As such, we developed an algorithmic solution which modifies an
+            existing Hamiltonian cycle and accomplishes the same task in around 30% fewer turns.
+        </p>
+    </section>
+    <section id="Introduction">
+        <h2>2 &emsp; Introduction</h2>
+        <p>
+            Snake is a game in which a "snake" controlled by the player can move either up, down, left, or right on a
+            square
+            grid. The player's goal is to move the snake towards the "apples,"" which spawn randomly on the grid
+            following
+            the consumption of an apple. As the snake consumes an apple, it grows in size by 1 cell. The goal is to
+            consume
+            all the apples until the snake fills the entire grid, without having the snake hit the walls or
+            itself.<br>There
+            are trivial solutions that always ensure the snake finishes the game, such as a single Hamiltonian cycle,
+            but
+            our approach modifies this to be much more efficient by having the snake take fewer turns to finish the
+            game.
+            Each turn is specified as motion of the snake's "head" between 2 adjacent cells. One potential application
+            of
+            this algorithm is snake-like robots, which are often used in confined spaces or hazardous environments,
+            where
+            traditional wheeled or legged robots cannot operate. The snake game can be used to develop algorithms for
+            planning the directed movement of these robots in a way that avoids obstacles and self-collision while
+            completing tasks at random spots, the "apples", and then reporting the results back to the origin of the
+            cycle.
+            Another potential application is that the snake could represent the spread of a wildfire, and the food that
+            the
+            snake eats could represent the fuel that the fire needs to grow. The snake's growth could then be used to
+            predict how the fire will spread and how to prevent it from reaching critical areas.
+        </p>
+    </section>
+    <h2>
+        3 &emsp; Appraoches
+    </h2>
+    <h3>
+        3.1 &emsp; AI Approaches
+    </h3>
+    <h4>
+        3.1.1 &emsp; Machine Learning Based Approaches
+    </h4>
+    <p>
+        Machine learning approaches, such as Deep Q-Learning, have been used to teach an AI to learn the snake game.
+        Other machine learning approaches have also been used, like Reinforcement Learning and Markov Decision
+        Processing, but the Deep Q-learning approach has been most successful due to the large number of states in snake
+        game <i><a href="#ref1">(Sebastianelli, Tipaldi, Ullo & Glielmo, 2021)</a></i>. However, this approach has been
+        rather unsuccessful in completing a perfect game in which the snake fills the grid. In 30 tests using this
+        method, the highest
+        reached score (number of apples collected) on a 20x20 grid was 62 <i><a href="#ref1">(Sebastianelli, Tipaldi,
+                Ullo & Glielmo, 2021)</a></i>, which is much lower than the 400 needed to reach a perfect game.
+    </p>
+    <h4>
+        3.1.2 &emsp; Evolutionary Algorithm
+    </h4>
+    <p>
+        An evolutionary algorithm is another approach that has been applied to the snake game problem. These algorithms
+        use game scores from various functions “based on smoothness, space, and food” to find the function leading to
+        the highest score <i><a href="#ref2">(Yeh, Su, Huang & Chiang, 2016)</a></i>. The functions are weighed based on
+        various performance parameters, and then combined using crossover operators to add random mutations to them
+        <i><a href="#ref2">(Yeh, Su, Huang & Chiang, 2016)</a></i>. The algorithm keeps running with new functions, and
+        then combining the best functions in
+        an evolutionary matter, to improve the algorithm. This approach has been moderately successful, but is very
+        computationally demanding compared to the Hamiltonian approaches discussed below.
+    </p>
+    <h3>
+        3.2 &emsp; Hamiltonian Cycle : The Trivial Case
+    </h3>
+    <p>
+        A Hamiltonian cycle is defined as a path that traverses every vertex, or cell, exactly once, while returning to
+        its original location <i><a href="#ref3">(Keller & Trotter, 2017)</a></i>. The base Hamiltonian approach follows
+        one Hamiltonian cycle indiscriminately, ensuring the snake will always reach a perfect game, as it will never
+        hit itself or the
+        walls.
+    <figure id="fig1">
+        <img class="notSnek" src="Snek AI_files/HamiltonianSnake.png" alt="Hamiltonian Snake">
+        <figcaption>Figure 1: The snake completing the Hamiltonian cycle</figcaption>
+    </figure>
+    As you can see in <a href="#fig1">Figure 1</a> above, the snake (with its head in blue) will always follow that
+    exact path no matter the
+    location of the apple (in red). This approach is reliable, ensuring the snake always completes the game, but it can
+    be made much more efficient, which is discussed in the section below.
+    </p>
+    <h3>3.3 &emsp; The Modified Cycle</h3>
+    <p>
+        Consider the scenario shown in <a href="#fig2">Figure 2</a>. Following the Hamiltonian Path, the snake will
+        proceed right, reaching
+        the apple in 7 turns. However, if the snake instead moves down it will reach the apple in 1 turn, saving 6
+        turns.
+    <figure id="fig2">
+        <img class="notSnek" src="Snek AI_files/SkippingSnake.png" alt="Skipping Snake">
+        <figcaption>Figure 2: Possible modifications of the cycle in the Snake Game</figcaption>
+    </figure>
+    However, taking shortcuts like the one explained above can sometimes lead to the entrapment and subsequent death
+    of the snake.
+    <figure id="fig3">
+        <img class="notSnek" src="Snek AI_files/GridPositioning.png" alt="Grid Positioning">
+        <figcaption>Figure 3: Numbering of cells on the board, ordered by position in the Hamiltonian cycle</figcaption>
+    </figure>
+    To enable the snake to take shortcuts, we changed the movement rules to the following:
+    <ol>
+        <li>The head may only move further along in the Hamiltonian cycle.</li>
+        <ol type="a">
+            <li>The head is allowed to skip sections of the cycle. For example, the head can move
+                from position 3 to position 12 in the cycle. (Refer to <a href="#fig3">Figure 3</a> for position labels
+                on the snake grid)</li>
+        </ol>
+        <li>The head is not allowed to move to a position where the tail is between the head and
+            the food if the head were to follow the Hamiltonian cycle.</li>
+        <ol type="a">
+            <li>For example, if the apple were at position 34 and the part of the tail at position
+                25, the head would not be allowed to skip from 16 to 27, even though it would be
+                normally allowed. This is to stop the snake from colliding with itself and ensures
+                the snake can always revert to a Hamiltonian cycle if necessary.</li>
+        </ol>
+        <li>If the apple is further along in the cycle than the head, the head is only allowed to
+            skip sections if it would get to the apple faster</li>
+        <ol type="a">
+            <li>For example, if the apple was at position 17 and the head at position 13, the head
+                would be allowed to skip to position 16, but not 27.</li>
+        </ol>
+        <li>If the head is further along in the cycle than the apple, the head is only allowed to
+            skip sections iff it would reach the end of the cycle faster</li>
+        <ol type="a">
+            <li>This is to reduce the amount of turns between apple consumptions.</li>
+        </ol>
+        <li>If the snake cannot skip ahead, move according to the Hamiltonian cycle.</li>
+        <ol type="a">
+            <li><a href="#modified">Modified Hamiltonian + End Base Hamiltonian</a></li>
+        </ol>
+    </ol>
+    <figure id="fig4">
+        <img class="notSnek" src="Snek AI_files/SkippingSnake2.png" alt="Skipping Snake 2">
+        <figcaption>Figure 4: Example of the snake skipping parts of the cycle to reach the food in fewer turns.
+        </figcaption>
+    </figure>
+    </p>
+    <h3 id="modified">
+        3.4 &emsp; Modified Cycle with Endgame Hamiltonian
+    </h3>
+    <p>
+        Although the previous algorithm improved the time between apple consumption when the snake was still relatively
+        short, it would waste time later in the game, as shown in <a href="#fig5">Figure 5</a>.
+    <figure id="fig5">
+        <img class="notSnek" src="Snek AI_files/FancySnake.png" alt="Fancy Snake">
+        <figcaption>Figure 5: Suboptimal performance in the snake game due to unlucky position of the apple</figcaption>
+    </figure>
+    Here, the snake has already consumed multiple apples on a modified cycle, but since the new apple has been placed
+    behind the head, the snake has to complete another cycle in order to reach the apple again. In the worst case, the
+    snake would have to complete one full cycle for a single apple consumed. However, this is not the case for a snake
+    following a Hamiltonian path as shown in <a href="#fig1">Figure 1</a>.<br>
+    Since the apple may only be placed in non-snake squares, the apple is guaranteed to be reached in 64-n turns for a
+    snake of length n in a Hamiltonian cycle, rather than the worst-case 64 turns of the modified cycle. While the
+    modified cycle is usually faster when there is ample empty space, it often fails when the snake takes up the
+    majority of the board. So when considering the worst-case scenario when the snake has already filled 32 cells (half
+    of the board), the Hamiltonian cycle will fill the board in around <math xmlns='http://www.w3.org/1998/Math/MathML'
+        mathematica:form='StandardForm' xmlns:mathematica='http://www.wolfram.com/XML/'>
+        <mrow>
+            <mrow>
+                <munderover>
+                    <mo>&#8721;</mo>
+                    <mrow>
+                        <mi>i</mi>
+                        <mo>=</mo>
+                        <mn>1</mn>
+                    </mrow>
+                    <mn>32</mn>
+                </munderover>
+                <mrow>
+                    <mo>(</mo>
+                    <mi>i</mi>
+                    <mo>)</mo>
+                </mrow>
+            </mrow>
+            <mo>=</mo>
+            <mn>496</mn>
+        </mrow>
+    </math> turns and the modified cycle will fill the board in around <math xmlns='http://www.w3.org/1998/Math/MathML'
+        mathematica:form='StandardForm' xmlns:mathematica='http://www.wolfram.com/XML/'>
+        <mrow>
+            <mrow>
+                <munderover>
+                    <mo movablelimits='true'>&#8721;</mo>
+                    <mrow>
+                        <mi>i</mi>
+                        <mo>=</mo>
+                        <mn>1</mn>
+                    </mrow>
+                    <mn>32</mn>
+                </munderover>
+                <mrow>
+                    <mo>(</mo>
+                    <mn>64</mn>
+                    <mo>)</mo>
+                </mrow>
+            </mrow>
+            <mo>=</mo>
+            <mrow>
+                <mn>32</mn>
+                <mo>&#183;</mo>
+                <mn>64</mn>
+            </mrow>
+            <mo>=</mo>
+            <mn>2048</mn>
+        </mrow>
+    </math> turns.<br>
+    To take advantage of the behavior of the Hamiltonian cycle on mostly-filled boards, we add the condition to always
+    use the Hamiltonian cycle when the snake reaches a length of 32 cells.
+    </p>
+    <h2>4 &emsp; Results</h2>
+    <figure id="fig6">
+        <img class="notSnek" src="Snek AI_files/ComparingSnakeGames.png" alt="Comparing Snake Games"
+            style="min-width: 800px; width: 50%;">
+        <figcaption>Figure 6: Distribution of Game Lengths on 10<sup>6</sup> Iterations (Graph)</figcaption>
+    </figure>
+    <figure id="fig7">
+        <img class="notSnek" src="Snek AI_files/Data Table.png" alt="Data Table" style="min-width: 800px; width: 50%;">
+        <figcaption>Figure 7: Distribution of Game Lengths on 10<sup>6</sup> Iterations (Table)</figcaption>
+    </figure>
+    <p>
+        <a href="#fig6">Figure 6</a> above shows the distribution of game lengths (in turns to finish the game) of one
+        million iterations each for the trivial Hamiltonian approach, the modified approach, and the combination of the
+        modified approach and Hamiltonian approach. As shown in <a href="#fig7">Figure 7</a>, the average number of
+        turns needed to complete a game is somewhat reduced by only modifying the cycle, but it was significantly
+        reduced using the combination approach.
+    </p>
+    <h2>5 &emsp; Closing</h2>
+    <p>
+        In this report we showed how a Hamiltonian cycle can be applied to the snake game to ensure a perfect game is
+        always reached. Building on this approach, we reduced the number of average turns by modifying the base cycle to
+        better target the apple. Finally, we combinedapproaches to gain a total 36% speedup compared to the Hamiltonian
+        cycle. In the future we will explore the possibility of incorporating traditional path-finding algorithms in our
+        approach, such as Dijikstra's and A*.
+    </p>
+    <h2>6 &emsp; Appendix</h2>
+    <h3>6.1 &emsp; References</h3>
+    <p>‌<span id="ref1">A. Sebastianelli, M. Tipaldi, S. L. Ullo and L. Glielmo, "A Deep
+            Q-Learning based approach applied to the Snake game," 2021 29th
+            Mediterranean Conference on Control and Automation (MED), PUGLIA, Italy,
+            2021, pp. 348-353, doi: 10.1109/MED51440.2021.9480232.</span><br />
+        <br />
+        <span id="ref2">
+            J. -F. Yeh, P. -H. Su, S. -H. Huang and T. -C. Chiang, "Snake game AI:
+            Movement rating functions and evolutionary algorithm-based
+            optimization," 2016 Conference on Technologies and Applications of
+            Artificial Intelligence (TAAI), Hsinchu, Taiwan, 2016, pp. 256-261, doi:
+            10.1109/TAAI.2016.7880166.</span><br />
+        <br />
+        <span id="ref3">Keller, M. T., &amp; Trotter, W. T. (2017). <em>Applied
+                combinatorics</em>. Mitchel T. Keller, William T. Trotter.</span>
+    </p>
+    <h3>6.2 &emsp; Code</h3>
+    All code files used for this project relating to optimizing the hamiltonian cycle can be found on this Github
+    repository by Aiden Lee: <a href="https://github.com/piman51277/snek">https://github.com/piman51277/snek</a>
+    <h3>6.3 &emsp; Working Model</h3>
+    <div id="snekboard">
+        <img id="snekbkg" src="./Snek AI_files/ab59f115c394.png">
+        <canvas id="snek" width="890" height="890"></canvas>
+    </div>
+    <style>
+        body {
+            border: 0;
+            margin: 50px;
+            background-color: #1e1e1e;
+            color: rgb(214, 214, 214);
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        h2 {
+            font-size: 30px;
+        }
+
+        h3 {
+            font-size: 26px;
+        }
+
+        h4 {
+            font-size: 21px;
+        }
+
+        iframe {
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -o-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+            transform: scale(0.8, 0.8);
+            -moz-transform-origin: center;
+            -webkit-transform-origin: center;
+            -o-transform-origin: center;
+            -ms-transform-origin: center;
+            transform-origin: center;
+            border: 0;
+            width: 100%;
+            height: 102%;
+            overflow: hidden;
+
+        }
+
+        .snekIframe {
+            width: 273px;
+            height: 273px;
+        }
+
+        figure {
+            text-align: center;
+        }
+
+        .notSnek {
+            min-width: 400px;
+            width: 20%;
+        }
+
+        a {
+            color: rgb(214, 214, 214);
+            text-decoration: none;
+        }
+
+        #snekboard {
+            position: relative;
+            width: 890px;
+            height: 890px;
+            margin: auto;
+        }
+
+        #snekbkg {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #snek {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</body>
+
+</html>
